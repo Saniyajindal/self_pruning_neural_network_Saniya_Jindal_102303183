@@ -1,0 +1,2 @@
+# self_pruning_neural_network_Saniya_Jindal_102303183
+self_pruning_neural_network
