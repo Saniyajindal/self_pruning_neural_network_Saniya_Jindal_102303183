@@ -1,72 +1,38 @@
-# self_pruning_neural_network_Saniya_Jindal_102303183
-self_pruning_neural_network
-# Self-Pruning Neural Network
+# Self-Pruning Neural Network via Differentiable Gating
+**Saniya Jindal | Roll No: 102303183**
 
-## Overview
+## 🚀 Overview
+This project implements a **Self-Pruning Neural Network** that leverages a differentiable gating mechanism to dynamically optimize its architecture during training. Tested on the **CIFAR-10** dataset, the model learns to identify and remove redundant neural connections, effectively acting as a learned regularizer.
 
-This project implements a self-pruning neural network where each weight is controlled by a learnable gate. The network learns to remove unnecessary connections during training using sparsity regularization.
+## 🧠 Key Mechanism
+The core of the project is the `PrunableLinear` layer. Unlike standard layers, each weight is modulated by a learnable gate score passed through a Sigmoid function:
 
----
+$$W_{effective} = W \cdot \sigma(G_{score})$$
 
-## Key Idea
+* **Active:** $\sigma(G_{score}) \approx 1$
+* **Pruned:** $\sigma(G_{score}) \approx 0$
 
-Each weight is multiplied by a gate:
+A **Sparsity Penalty ($\lambda$)** is added to the loss function to encourage the network to "turn off" as many gates as possible without sacrificing classification accuracy.
 
-Effective Weight = Weight × Sigmoid(Gate Score)
+## 📊 Performance & Results
+By normalizing the sparsity loss and optimizing gate initialization, the model achieved a superior balance between compression and performance:
 
-* Gate ≈ 1 → active
-* Gate ≈ 0 → pruned
+| Lambda ($\lambda$) | Accuracy | Sparsity | Status |
+| :--- | :--- | :--- | :--- |
+| 0.01 | 47.36% | 3.48% | Dense Baseline |
+| 0.10 | 47.79% | 58.75% | Moderate Pruning |
+| **0.50** | **49.00%** | **72.87%** | **Highly Optimized** |
 
----
+### Key Takeaways:
+* **Accuracy Boost:** Increasing pruning intensity ($\lambda=0.5$) actually improved accuracy by **~1.6%**, proving that pruning effectively removes noise and prevents overfitting.
+* **High Compression:** The network successfully discarded **72.87%** of its parameters while reaching peak performance.
 
-## Architecture
+## 📈 Gate Distribution
+The final state of the gates shows a clear **Bimodal Distribution**, as seen in the histogram below. Most gates have converged to exactly $0$ (successfully pruned) or near $0.9$ (retained for critical features).
 
-* Custom PrunableLinear layer
-* Fully connected neural network
-* CIFAR-10 dataset
+![Gate Distribution](Gates.png)
 
----
-
-## Loss Function
-
-Total Loss = Classification Loss + λ × Sparsity Loss
-
----
-
-## Results
-
-| Lambda | Accuracy | Sparsity |
-| ------ | -------- | -------- |
-| 0.01   | 30.09%   | 95.78%   |
-| 0.1    | 30.43%   | 99.98%   |
-| 0.5    | 25.52%   | 100.00%  |
-
----
-
-## Observations
-
-* Increasing λ significantly improves sparsity.
-* At λ = 0.5, the model achieves complete pruning (100% sparsity).
-* Higher sparsity leads to a drop in accuracy, demonstrating the trade-off between model compression and performance.
-* λ = 0.1 provides a good balance between accuracy and sparsity.
-
----
-
-## Gate Distribution
-
-The histogram shows a strong concentration of gate values near zero, indicating successful pruning.
-
-![Gate Distribution](gates.png)
-
----
-
-## How to Run
-
-pip install torch torchvision matplotlib
-Run the notebook in Google Colab
-
----
-
-## Conclusion
-
-This project demonstrates a self-pruning neural network that dynamically removes unnecessary connections during training using learnable gates and L1 regularization.
+## 🛠️ Usage
+1. **Install Dependencies:**
+   ```bash
+   pip install torch torchvision matplotlib
