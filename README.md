@@ -1,10 +1,10 @@
 # Self-Pruning Neural Network via Differentiable Gating
 **Saniya Jindal | Roll No: 102303183**
 
-## 🚀 Overview
+##  Overview
 This project implements a **Self-Pruning Neural Network** that leverages a differentiable gating mechanism to dynamically optimize its architecture during training. Tested on the **CIFAR-10** dataset, the model learns to identify and remove redundant neural connections, effectively acting as a learned regularizer.
 
-## 🧠 Key Mechanism
+##  Key Mechanism
 The core of the project is the `PrunableLinear` layer. Unlike standard layers, each weight is modulated by a learnable gate score passed through a Sigmoid function:
 
 $$W_{effective} = W \cdot \sigma(G_{score})$$
@@ -14,7 +14,7 @@ $$W_{effective} = W \cdot \sigma(G_{score})$$
 
 A **Sparsity Penalty ($\lambda$)** is added to the loss function to encourage the network to "turn off" as many gates as possible without sacrificing classification accuracy.
 
-## 📊 Performance & Results
+##  Performance & Results
 By normalizing the sparsity loss and optimizing gate initialization, the model achieved a superior balance between compression and performance:
 
 | Lambda ($\lambda$) | Accuracy | Sparsity | Status |
@@ -27,7 +27,7 @@ By normalizing the sparsity loss and optimizing gate initialization, the model a
 * **Accuracy Boost:** Increasing pruning intensity ($\lambda=0.5$) actually improved accuracy by **~1.6%**, proving that pruning effectively removes noise and prevents overfitting.
 * **High Compression:** The network successfully discarded **72.87%** of its parameters while reaching peak performance.
 
-## 📈 Gate Distribution
+##  Gate Distribution
 The final state of the gates shows a clear **Bimodal Distribution**, as seen in the histogram below. Most gates have converged to exactly $0$ (successfully pruned) or near $0.9$ (retained for critical features).
 
 ![Gate Distribution](Gates.png)
